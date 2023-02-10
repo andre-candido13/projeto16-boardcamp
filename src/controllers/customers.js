@@ -30,7 +30,7 @@ export async function listarCustomers (req, res) {
     try {
 
         const listar = await db.query(`SELECT * FROM customers`)
-        return res.status(201)
+        return res.status(200).send(listar.rows)
 
 
     } catch (err) {
