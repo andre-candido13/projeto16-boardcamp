@@ -10,7 +10,7 @@ const rentalsRouter = Router()
 
 
 
-gamesRouter.post("/rentals", validateSchema(alugueisJoi), inserirAlugueis)
+rentalsRouter.post("/rentals", validateSchema(alugueisJoi), inserirAlugueis)
 
 
 
