@@ -50,7 +50,7 @@ export async function listarCustomerID (req, res) {
         return res.status(401).send("Cliente não encontrado!")
         
 
-        return res.send(customerID.rows)
+        return res.status(200).send(customerID.rows[0])
 
         
     } catch (err) {
