@@ -98,7 +98,7 @@ export async function finalizarAluguel (req, res) {
       const { pricePerDay } = game.rows[0];
 
 
-      delayFee = diasAtrasados * pricePerDay;
+      delayFee =  pricePerDay * diasAtrasados
     }
     
     await db.query(

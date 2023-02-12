@@ -44,10 +44,11 @@ export async function listarCustomerID (req, res) {
 
     try {
 
-        const customerID = await db.query(` SELECT * FROM customers WHERE id= ${id} ;`)
+        const customerID = await db.query(` SELECT * FROM customers WHERE id $1 ;`,
+        ([id]))
             
         if (customerID.rowCount < 1) 
-        return res.status(401).send("Cliente não encontrado!")
+        return res.status(404).send("Cliente não encontrado!")
         
 
         return res.status(200).send(customerID.rows[0])
