@@ -5,8 +5,8 @@ import joi from "joi"
 
 export const alugueisJoi = joi.object({
 
-customerId: joi.number().positive().required(),
-gameId: joi.number().positive().required(),
-daysRented: joi.number().positive().required()
+customerId: joi.number().integer().positive().required(),
+gameId: joi.number().integer().positive().required(),
+daysRented: joi.number().integer().positive().required()
 
 })
