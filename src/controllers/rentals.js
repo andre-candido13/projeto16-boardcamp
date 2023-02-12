@@ -28,8 +28,6 @@ console.log(alugueis.rows)
 }
 
 
-
-
 export async function inserirAlugueis (req, res) {
 
 const { customerId, gameId, daysRented } = req.body
@@ -67,12 +65,12 @@ return res.status(201).send("OK")
 
 export async function finalizarAluguel (req, res) {
 
+  try {
     const { id } = req.params
     
     const dataAtual = new Date();
-    const retornoALuguel = dataAtual.toISOString().split("T")[0];
+    const retornoAluguel = dataAtual.toISOString().split("T")[0];
     
-    try {
     
     const aluguelExistente = await db.query(`SELECT * FROM rentals WHERE id=$1`,
     ([id]))
@@ -87,16 +85,16 @@ export async function finalizarAluguel (req, res) {
         return res.status(400).send("Aluguel disponivel")
     }
     
-    const dataAluguel = new Date(check.dataAluguel);
-    const diasAlugados = check.diasAlugados;
-    const devolucao = new Date(devolucao);
+    const dataAluguel = new Date(aluguel.dataAluguel);
+    const diasAlugados = aluguel.diasAlugados;
+    const devolucao = new Date(retornoAluguel);
     const tempoAlugado = Math.abs(devolucao.getTime() - dataAluguel.getTime());
     const tempoGasto = Math.ceil(tempoAlugado / (1000 * 3600 * 24));
     const atraso = tempoGasto- diasAlugados;
     let delayFee = 0;
     if (atraso > 0) {
       const game = await db.query('SELECT * FROM games WHERE id = $1', [
-        check.gameId,
+        aluguel.gameId,
       ]);
       
       const { pricePerDay } = game.rows[0]
@@ -104,7 +102,7 @@ export async function finalizarAluguel (req, res) {
     }
     
     const update = await db.query(`UPDATE rentals SET "returnDate" = $1, "delayFee" = $2 WHERE id = $3 `,
-    ([returnDate, delayFee, id]))
+    ([retornoAluguel, delayFee, id]))
     
     return res.status(200).send("OK")
     
@@ -124,7 +122,7 @@ export async function finalizarAluguel (req, res) {
         const selec = await db.query(`SELECT * FROM rentals WHERE id= $1`,
         ([id]))
 
-        if (selec.rowCount === 0 ) {
+        if (selec.rowCount < 1 ) {
           return res.status(404).send("Aluguel não encontrado")
         }
 

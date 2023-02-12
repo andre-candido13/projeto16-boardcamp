@@ -11,7 +11,7 @@ const rentalsRouter = Router()
 
 rentalsRouter.get("/rentals", getAlugueis)
 rentalsRouter.post("/rentals", validateSchema(alugueisJoi), inserirAlugueis)
-rentalsRouter.post("/rentals/:id/return", finalizarAluguel)
+rentalsRouter.post('/rentals/:id/return', finalizarAluguel)
 rentalsRouter.delete("/rentals/:id", deletarAluguel)
 
 
