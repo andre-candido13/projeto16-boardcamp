@@ -63,3 +63,54 @@ return res.status(201).send("OK")
 
 }
 }
+
+
+export async function finalizarAluguel (req, res) {
+
+    const { id } = req.params
+    
+    const dataAtual = new Date();
+    const retornoALuguel = dataAtual.toISOString().split("T")[0];
+    
+    try {
+    
+    const aluguelExistente = await db.query(`SELECT * FROM rentals WHERE id=$1`,
+    ([id]))
+    
+    if (aluguelExistente.rows.length === 0) {
+        return res.status(400).send("Aluguel não encontrado!")
+    }
+    
+    const aluguel = aluguelExistente.rows[0]
+    
+    if (aluguel.returnDate !== null) {
+        return res.status(400).send("Aluguel disponivel")
+    }
+    
+    const dataAluguel = new Date(check.dataAluguel);
+    const diasAlugados = check.diasAlugados;
+    const devolucao = new Date(devolucao);
+    const tempoAlugado = Math.abs(devolucao.getTime() - dataAluguel.getTime());
+    const tempoGasto = Math.ceil(tempoAlugado / (1000 * 3600 * 24));
+    const atraso = tempoGasto- diasAlugados;
+    let delayFee = 0;
+    if (atraso > 0) {
+      const game = await db.query('SELECT * FROM games WHERE id = $1', [
+        check.gameId,
+      ]);
+      
+      const { pricePerDay } = game.rows[0]
+      delayFee = atraso * pricePerDay;
+    }
+    
+    const update = await db.query(`UPDATE rentals SET "returnDate" = $1, "delayFee" = $2 WHERE id = $3 `,
+    ([returnDate, delayFee, id]))
+    
+    return res.status(200).send("OK")
+    
+    } catch (err) {
+        res.status(500).send(err.message)
+    }
+    
+    }
+    
