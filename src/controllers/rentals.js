@@ -113,4 +113,41 @@ export async function finalizarAluguel (req, res) {
     }
     
     }
+
+
+    export async function deletarAluguel (req, res) {
+
+      const { id } = req.params
+
+      try {
+
+        const selec = await db.query(`SELECT * FROM rentals WHERE id= $1`,
+        ([id]))
+
+        if (selec.rowCount === 0 ) {
+          return res.status(404).send("Aluguel não encontrado")
+        }
+
+        if (selec.rows[0].returnDate) {
+          return res.status(400).send("Jogo consta alugado")
+
+        }
+
+        const deleteAluguel = await db.query(`DELETE FROM rentals WHERE id= $1`,
+        ([id]))
+        res.status(200).send("DELETADO")
+
+
+
+
+
+
+
+
+
+      } catch (err) {
+        res.status(500).send(err.message)
+      }
+
+    }
     
